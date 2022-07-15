@@ -40,3 +40,7 @@ button {
 #table-container td, #table-container th {
     padding: 10px;
 }
+
+#home-container {
+    margin-bottom: 15px;
+}
