@@ -1,0 +1,7 @@
+.idea
+node_modules
+/index.js
+index.js.LICENSE.txt
+id
+.DS_Store
+example

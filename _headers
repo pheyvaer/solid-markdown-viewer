@@ -1,0 +1,3 @@
+# Netlify uses this file to set headers of specific files.
+/id
+  Content-Type: application/ld+json
