@@ -12,8 +12,8 @@ import showdown from 'showdown';
 let currentMarkdownUrl;
 let rootMarkdownUrl;
 const DEFAULTS = {
-  currentMarkdownUrl: 'http://localhost:3001/test',
-  rootMarkdownUrl: 'http://localhost:3001/home'
+  currentMarkdownUrl: 'https://pheyvaer.pod.knows.idlab.ugent.be/examples/wiki/home',
+  rootMarkdownUrl: 'https://pheyvaer.pod.knows.idlab.ugent.be/examples/wiki/home'
 }
 
 window.onload = async () => {
