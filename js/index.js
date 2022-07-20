@@ -154,7 +154,16 @@ function replaceUrlsInMarkdown() {
     } else {
       url.setAttribute('target', '_blank');
     }
-  })
+  });
+
+  const imgs = document.querySelectorAll('#markdown-container img');
+
+  imgs.forEach(async img => {
+    const src = img.getAttribute('src');
+    const fullUrl = (new URL(src, currentMarkdownUrl)).href;
+
+    img.setAttribute('src', fullUrl);
+  });
 }
 
 function createViewerUrl(targetUrl, currentUrl, rootUrl) {
