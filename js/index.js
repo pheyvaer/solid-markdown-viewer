@@ -161,8 +161,11 @@ function replaceUrlsInMarkdown() {
   imgs.forEach(async img => {
     const src = img.getAttribute('src');
     const fullUrl = (new URL(src, currentMarkdownUrl)).href;
+    const response = await fetch(fullUrl);
+    const blob = await response.blob();
+    const dataUrl = await convertBlobToDataUrl(blob);
 
-    img.setAttribute('src', fullUrl);
+    img.setAttribute('src', dataUrl);
   });
 }
 
@@ -184,4 +187,14 @@ function setQueryParametersAfterLogin() {
   }
 
   window.history.replaceState(null, null, '?' + urlParams.toString());
+}
+
+function convertBlobToDataUrl(blob) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+  });
 }
