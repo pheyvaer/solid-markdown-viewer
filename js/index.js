@@ -27,6 +27,7 @@ window.onload = async () => {
   currentMarkdownUrl = urlParams.get('current') || getItemFromLocalStorage('currentMarkdownUrl') || rootMarkdownUrl || DEFAULTS.currentMarkdownUrl;
 
   setItemFromLocalStorage('currentMarkdownUrl', currentMarkdownUrl);
+  setItemFromLocalStorage('rootMarkdownUrl', rootMarkdownUrl);
 
   document.getElementById('start-markdown').value = currentMarkdownUrl;
   document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
