@@ -15,7 +15,7 @@ module.exports = {
     plugins: [
         new NodePolyfillPlugin(),
         new webpack.DefinePlugin({
-            CLIENT_ID: JSON.stringify("https://solid-markdown-viewer.netlify.app/id")
+            CLIENT_ID: JSON.stringify("https://solid-md-viewer.netlify.app/id")
         })
     ],
     watchOptions: {
