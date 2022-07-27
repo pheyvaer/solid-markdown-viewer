@@ -133,7 +133,7 @@ async function loadMarkdown() {
   const response = await fetch(currentMarkdownUrl);
   const markdown = await response.text();
   console.log(...response.headers);
-  const converter = new showdown.Converter();
+  const converter = new showdown.Converter({tables: true});
   const html = converter.makeHtml(markdown);
   document.getElementById('markdown-container').innerHTML = html;
   replaceUrlsInMarkdown();
