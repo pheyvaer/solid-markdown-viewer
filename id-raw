@@ -4,5 +4,6 @@
   "client_id": "URL/id",
   "client_name": "Markdown viewer",
   "redirect_uris": ["URL", "URL/"],
-  "client_uri": "URL"
+  "client_uri": "URL",
+  "http://schema.org/description": "View Markdown files that are hosted on a Solid pod."
 }
