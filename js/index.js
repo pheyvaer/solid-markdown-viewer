@@ -40,7 +40,8 @@ window.onload = async () => {
     }
   })
 
-  loginAndFetch(null );
+  const isLoggedIn = await loginAndFetch(null );
+  loadMarkdown(isLoggedIn);
 };
 
 async function loginAndFetch(oidcIssuer) {
@@ -64,6 +65,7 @@ async function loginAndFetch(oidcIssuer) {
       });
     } else {
       document.getElementById('webid-form').classList.remove('hidden');
+      return false;
     }
   } else {
     const webid = getDefaultSession().info.webId;
@@ -81,12 +83,13 @@ async function loginAndFetch(oidcIssuer) {
     const result = await getRDFasJson(webid, frame, fetch);
     const name = getPersonName(result) || webid;
 
-    document.getElementById('current-user').innerText = 'Welcome ' + name;
+    document.getElementById('current-user').innerText = `Welcome ${name}!`;
     document.getElementById('current-user').classList.remove('hidden');
     // document.getElementById('storage-location-container').classList.remove('hidden');
     document.getElementById('status-message').classList.remove('hidden');
     document.getElementById('webid-form').classList.add('hidden');
-    loadMarkdown();
+    await loadMarkdown();
+    return true;
   }
 }
 
@@ -127,7 +130,7 @@ async function clickLogInBtn() {
   }
 }
 
-async function loadMarkdown() {
+async function loadMarkdown(isLoggedIn) {
   const response = await fetch(currentMarkdownUrl);
 
   if (response.status === 200) {
@@ -138,11 +141,17 @@ async function loadMarkdown() {
     replaceUrlsInMarkdown();
     document.getElementById('status-message').classList.add('hidden');
     document.getElementById('home-container').classList.remove('hidden');
+    document.getElementById('webid-form').classList.add('hidden');
   } else {
     const message = document.getElementById('status-message');
 
     if (response.status === 401) {
-      message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a>.`;
+      if (isLoggedIn) {
+        message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a> with your WebID.`;
+      } else {
+        message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a>. Please log in first.`;
+      }
+
     } else if (response.status === 404) {
       message.innerHTML = `The resource at <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a> was not found.`;
     } else {

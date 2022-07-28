@@ -64,17 +64,25 @@ export function getRDFasJson(url, frame, fetch) {
 export function getPersonName(person) {
   if (person.name) {
     if (Array.isArray(person.name)) {
-      return person.name[0]['@value'];
+      return _getValueFromAttribute(person.name[0]);
     } else {
-      return person.name['@value'];
+      return _getValueFromAttribute(person.name);
     }
   } else if (person.givenName) {
     if (Array.isArray(person.givenName)) {
-      return person.givenName[0]['@value'] + ' ' + person.familyName[0]['@value']
+      return _getValueFromAttribute(person.givenName[0]) + ' ' + _getValueFromAttribute(person.familyName[0])
     } else {
-      return person.givenName['@value'] + ' ' + person.familyName['@value'];
+      return _getValueFromAttribute(person.givenName) + ' ' + _getValueFromAttribute(person.familyName);
     }
   }
+}
+
+function _getValueFromAttribute(obj) {
+  if (typeof obj === 'string' || obj instanceof String) {
+    return obj;
+  }
+
+  return obj['@value'];
 }
 
 async function frameFromQuads(quads, frame) {
