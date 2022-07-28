@@ -86,9 +86,7 @@ async function loginAndFetch(oidcIssuer) {
     // document.getElementById('storage-location-container').classList.remove('hidden');
     document.getElementById('status-message').classList.remove('hidden');
     document.getElementById('webid-form').classList.add('hidden');
-    await loadMarkdown();
-    document.getElementById('status-message').classList.add('hidden');
-    document.getElementById('home-container').classList.remove('hidden');
+    loadMarkdown();
   }
 }
 
@@ -131,12 +129,28 @@ async function clickLogInBtn() {
 
 async function loadMarkdown() {
   const response = await fetch(currentMarkdownUrl);
-  const markdown = await response.text();
-  console.log(...response.headers);
-  const converter = new showdown.Converter({tables: true});
-  const html = converter.makeHtml(markdown);
-  document.getElementById('markdown-container').innerHTML = html;
-  replaceUrlsInMarkdown();
+
+  if (response.status === 200) {
+    const markdown = await response.text();
+    const converter = new showdown.Converter({tables: true});
+    const html = converter.makeHtml(markdown);
+    document.getElementById('markdown-container').innerHTML = html;
+    replaceUrlsInMarkdown();
+    document.getElementById('status-message').classList.add('hidden');
+    document.getElementById('home-container').classList.remove('hidden');
+  } else {
+    const message = document.getElementById('status-message');
+
+    if (response.status === 401) {
+      message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a>.`;
+    } else if (response.status === 404) {
+      message.innerHTML = `The resource at <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a> was not found.`;
+    } else {
+      message.innerText = `An error occurred (HTTP status code is ${response.status}).`;
+    }
+
+    message.classList.remove('hidden');
+  }
 }
 
 function replaceUrlsInMarkdown() {
