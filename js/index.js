@@ -135,7 +135,7 @@ async function loadMarkdown(isLoggedIn) {
 
   if (response.status === 200) {
     const markdown = await response.text();
-    const converter = new showdown.Converter({tables: true});
+    const converter = new showdown.Converter({tables: true, disableForced4SpacesIndentedSublists: true});
     const html = converter.makeHtml(markdown);
     document.getElementById('markdown-container').innerHTML = html;
     replaceUrlsInMarkdown();
