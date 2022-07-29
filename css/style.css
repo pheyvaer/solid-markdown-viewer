@@ -44,3 +44,15 @@ button {
 #home-container {
     margin-bottom: 15px;
 }
+
+a {
+    background-color: transparent;
+    color: #0969da;
+    text-decoration: none;
+}
+
+footer {
+    margin-top: 40px;
+    border-top: 1px solid;
+    padding-top: 10px;
+}
