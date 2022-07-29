@@ -86,7 +86,7 @@ async function loginAndFetch(oidcIssuer) {
     document.getElementById('current-user').innerText = `Welcome ${name}!`;
     document.getElementById('current-user').classList.remove('hidden');
     // document.getElementById('storage-location-container').classList.remove('hidden');
-    document.getElementById('status-message').classList.remove('hidden');
+    // document.getElementById('status-message').classList.remove('hidden');
     document.getElementById('webid-form').classList.add('hidden');
     await loadMarkdown();
     return true;
