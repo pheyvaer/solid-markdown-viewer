@@ -1,9 +1,19 @@
 {
   "@context": "https://www.w3.org/ns/solid/oidc-context.jsonld",
-
   "client_id": "URL/id",
   "client_name": "Markdown viewer",
-  "redirect_uris": ["URL", "URL/"],
+  "redirect_uris": [
+    "URL",
+    "URL/"
+  ],
   "client_uri": "URL",
-  "http://schema.org/description": "View Markdown files that are hosted on a Solid pod."
+  "http://schema.org/description": "View Markdown files that are hosted on a Solid pod.",
+  "http://schema.org/category": [
+    {
+      "@id": "https://data.knows.idlab.ugent.be/person/office/application-categories#reference"
+    },
+    {
+      "@id": "https://data.knows.idlab.ugent.be/person/office/application-categories#business"
+    }
+  ]
 }
