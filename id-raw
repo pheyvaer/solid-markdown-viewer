@@ -7,7 +7,7 @@
     "URL/"
   ],
   "client_uri": "URL",
-  "logo_uri": "URL/img/logo.svg",
+  "logo_uri": "URL/img/logo.png",
   "http://schema.org/description": "View Markdown files that are hosted on a Solid pod.",
   "http://schema.org/category": [
     {
