@@ -30,8 +30,7 @@ window.onload = async () => {
   setItemFromLocalStorage('rootMarkdownUrl', rootMarkdownUrl);
 
   document.getElementById('start-markdown').value = currentMarkdownUrl;
-  const homeViewerUrl = createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl);
-  document.getElementById('home').setAttribute('href', homeViewerUrl);
+  document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
   document.getElementById('home').addEventListener('click', (e) => {
     e.preventDefault();
     loadMarkdown(getDefaultSession().info.isLoggedIn, rootMarkdownUrl);
