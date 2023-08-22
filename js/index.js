@@ -30,7 +30,12 @@ window.onload = async () => {
   setItemFromLocalStorage('rootMarkdownUrl', rootMarkdownUrl);
 
   document.getElementById('start-markdown').value = currentMarkdownUrl;
-  document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
+  const homeViewerUrl = createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl);
+  document.getElementById('home').setAttribute('href', homeViewerUrl);
+  document.getElementById('home').addEventListener('click', (e) => {
+    e.preventDefault();
+    loadMarkdown(getDefaultSession().info.isLoggedIn, rootMarkdownUrl);
+  });
 
   const webIDInput = document.getElementById('webid');
   webIDInput.value = getMostRecentWebID();
@@ -93,7 +98,7 @@ async function loginAndFetch(oidcIssuer) {
     // document.getElementById('storage-location-container').classList.remove('hidden');
     // document.getElementById('status-message').classList.remove('hidden');
     document.getElementById('webid-form').classList.add('hidden');
-    await loadMarkdown();
+    await loadMarkdown(true);
     return true;
   }
 }
@@ -141,9 +146,10 @@ async function clickLogInBtn() {
 /**
  * This method loads the Markdown at currentMarkdownUrl and displays it in the HTML.
  * @param {boolean} isLoggedIn - This boolean is true if the user is logged in.
+ * @param {string} markdownUrl - The URL of the Markdown file that needs to be loaded.
  */
-async function loadMarkdown(isLoggedIn) {
-  const response = await fetch(currentMarkdownUrl);
+async function loadMarkdown(isLoggedIn, markdownUrl = currentMarkdownUrl) {
+  const response = await fetch(markdownUrl);
 
   if (response.status === 200) {
     const markdown = await response.text();
@@ -152,20 +158,25 @@ async function loadMarkdown(isLoggedIn) {
     document.getElementById('markdown-container').innerHTML = html;
     replaceUrlsInMarkdown();
     document.getElementById('status-message').classList.add('hidden');
-    document.getElementById('home-container').classList.remove('hidden');
+    if (markdownUrl === rootMarkdownUrl) {
+      document.getElementById('home-container').classList.add('hidden');
+    } else {
+      document.getElementById('home-container').classList.remove('hidden');
+    }
     document.getElementById('webid-form').classList.add('hidden');
+    document.title = document.querySelector('#markdown-container h1').innerText;
   } else {
     const message = document.getElementById('status-message');
 
     if (response.status === 401) {
       if (isLoggedIn) {
-        message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a> with your WebID.`;
+        message.innerHTML = `You don't have access to <a href="${markdownUrl}">${markdownUrl}</a> with your WebID.`;
       } else {
-        message.innerHTML = `You don't have access to <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a>. Please log in first.`;
+        message.innerHTML = `You don't have access to <a href="${markdownUrl}">${markdownUrl}</a>. Please log in first.`;
       }
 
     } else if (response.status === 404) {
-      message.innerHTML = `The resource at <a href="${currentMarkdownUrl}">${currentMarkdownUrl}</a> was not found.`;
+      message.innerHTML = `The resource at <a href="${markdownUrl}">${markdownUrl}</a> was not found.`;
     } else {
       message.innerText = `An error occurred (HTTP status code is ${response.status}).`;
     }
@@ -188,6 +199,10 @@ function replaceUrlsInMarkdown() {
     const contentType = response.headers.get('Content-Type');
 
     if (contentType && contentType === 'text/markdown') {
+      url.addEventListener('click', async (e) => {
+        e.preventDefault();
+        loadMarkdown(getDefaultSession().info.isLoggedIn, fullUrl);
+      });
       url.setAttribute('href', createViewerUrl(href, currentMarkdownUrl, rootMarkdownUrl));
     } else {
       url.setAttribute('target', '_blank');
