@@ -8,7 +8,9 @@
     "build:id:dev": "sed 's/URL/http:\\/\\/localhost:8080/g' id-raw > id",
     "build:id:prod": "sed 's/URL/https:\\/\\/solid-md-viewer.netlify.app/g' id-raw > id",
     "start": "npx http-server .",
-    "watch": "npm run build:id:dev; npx webpack serve -c ./webpack.dev.config.js --static ."
+    "watch": "npm run build:id:dev; npx webpack serve -c ./webpack.dev.config.js --static .",
+    "lint": "eslint . --ext js --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext js --report-unused-disable-directives --max-warnings 0 --fix"
   },
   "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
   "license": "MIT",
@@ -16,6 +18,8 @@
     "@babel/core": "^7.17.2",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
+    "eslint": "^8.45.0",
+    "eslint-plugin-jsdoc": "^46.4.6",
     "http-server": "^14.1.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "webpack": "^5.68.0",
