@@ -1,37 +1,61 @@
 import rdfParser from "rdf-parse";
 import jsonld from 'jsonld';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-import * as WacAllow from 'wac-allow';
 
+/**
+ * This function returns the most recent WebID from local storage.
+ * @returns {string} The most recent WebID.
+ */
 export function getMostRecentWebID() {
   return window.localStorage.getItem('mostRecentWebID');
 }
 
+/**
+ * This function saves a WebID in the local storage as most recent WebID.
+ * @param {string} webId - The WebID that needs to be saved.
+ */
 export function setMostRecentWebID(webId) {
-  return window.localStorage.setItem('mostRecentWebID', webId);
+  window.localStorage.setItem('mostRecentWebID', webId);
 }
 
+/**
+ * This method stores a value at a given key in the local storage.
+ * @param {string} key - The key to store the value.
+ * @param {string} value - The value to store.
+ */
 export function setItemFromLocalStorage(key, value) {
-  return window.localStorage.setItem(key, value);
+  window.localStorage.setItem(key, value);
 }
 
+/**
+ * This function gets an item from the local storage.
+ * @param {string} key - The key to identify to item that needs to be returned from the storage.
+ * @returns {string} The item in the local storage.
+ */
 export function getItemFromLocalStorage(key) {
   return window.localStorage.getItem(key);
 }
 
+/**
+ * This function fetches the RDF from a URL and converts it to JSON.
+ * @param {string} url - The URL to fetch.
+ * @param {object} frame - The JSONLD frame.
+ * @param {Function} fetch - Fetch function.
+ * @returns {object} - The object representation of the RDF, using the JSON-LD frame.
+ */
 export function getRDFasJson(url, frame, fetch) {
   if (!fetch) {
     throw new Error('No fetch function is provided.');
   }
 
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve, reject) => { // eslint-disable-line no-async-promise-executor
     // mostly taken from ldfetch
     //We like quads, so preference to serializations that we can parse fast with quads
     //Then comes JSON-LD, which is slower to parse
     //Then comes rdf/xml, turtle and n-triples, which we support in a fast manner, but it doesn’t contain named graphs
     //We also support HTML, but that’s really slow
     //We also support N3 and parse it quite fast, but we won’t do anything special with the N3 rules, so put it to low q
-    var accept = 'application/trig;q=1.0,application/n-quads,application/ld+json;q=0.9,application/rdf+xml;q=0.8,text/turtle,application/n-triples';
+    const accept = 'application/trig;q=1.0,application/n-quads,application/ld+json;q=0.9,application/rdf+xml;q=0.8,text/turtle,application/n-triples';
 
     const myInit = {
       method: 'GET',
@@ -61,6 +85,11 @@ export function getRDFasJson(url, frame, fetch) {
   })
 }
 
+/**
+ * This function returns the name of a person.
+ * @param {object} person - A JSON-LD object representing a person.
+ * @returns {string|null} The name of a person or null.
+ */
 export function getPersonName(person) {
   if (person.name) {
     if (Array.isArray(person.name)) {
@@ -75,16 +104,29 @@ export function getPersonName(person) {
       return _getValueFromAttribute(person.givenName) + ' ' + _getValueFromAttribute(person.familyName);
     }
   }
+
+  return null;
 }
 
-function _getValueFromAttribute(obj) {
-  if (typeof obj === 'string' || obj instanceof String) {
-    return obj;
+/**
+ * This function gets the value of an attribute from a JSON-LD object.
+ * @param {object} attribute - An attribute from a JSON-LD object.
+ * @returns {*} The value of the attribute.
+ */
+function _getValueFromAttribute(attribute) {
+  if (typeof attribute === 'string' || attribute instanceof String) {
+    return attribute;
   }
 
-  return obj['@value'];
+  return attribute['@value'];
 }
 
+/**
+ * This function creates a framed JSON-LD object from an array of Quads.
+ * @param {Array} quads - An array of Quads.
+ * @param {object} frame - JSON-LD frame.
+ * @returns {object} The framed JSON-LD object of the Quads.
+ */
 async function frameFromQuads(quads, frame) {
   var objects = { "@graph": [] };
   var graphs = {};

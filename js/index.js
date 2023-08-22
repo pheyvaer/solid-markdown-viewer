@@ -44,6 +44,11 @@ window.onload = async () => {
   loadMarkdown(isLoggedIn);
 };
 
+/**
+ * This function handles the logging in and the fetching of the user information.
+ * @param {string} oidcIssuer - The OIDC issuer to log in with.
+ * @returns {boolean} True if the login was successful.
+ */
 async function loginAndFetch(oidcIssuer) {
   await handleIncomingRedirect(
     {
@@ -60,8 +65,8 @@ async function loginAndFetch(oidcIssuer) {
 
       await login({
         oidcIssuer,
-        clientId: CLIENT_ID,
-        redirectUrl: CLIENT_ID.replace('/id', '')
+        clientId: CLIENT_ID,  // eslint-disable-line no-undef
+        redirectUrl: CLIENT_ID.replace('/id', '')  // eslint-disable-line no-undef
       });
     } else {
       document.getElementById('webid-form').classList.remove('hidden');
@@ -93,6 +98,9 @@ async function loginAndFetch(oidcIssuer) {
   }
 }
 
+/**
+ * This function handles the clicking on the log-in button.
+ */
 async function clickLogInBtn() {
   // Hide no OIDC issuer error
   // document.getElementById('no-oidc-issuer-error').classList.add('hidden');
@@ -130,6 +138,10 @@ async function clickLogInBtn() {
   }
 }
 
+/**
+ * This method loads the Markdown at currentMarkdownUrl and displays it in the HTML.
+ * @param {boolean} isLoggedIn - This boolean is true if the user is logged in.
+ */
 async function loadMarkdown(isLoggedIn) {
   const response = await fetch(currentMarkdownUrl);
 
@@ -162,6 +174,9 @@ async function loadMarkdown(isLoggedIn) {
   }
 }
 
+/**
+ * This function replaces the URLs in the Markdown text.
+ */
 function replaceUrlsInMarkdown() {
   const urls = document.querySelectorAll('#markdown-container a');
 
@@ -192,11 +207,21 @@ function replaceUrlsInMarkdown() {
   });
 }
 
+/**
+ * This function creates a URL for the viewer.
+ * @param {string} targetUrl - The target URL of the viewer.
+ * @param {string} currentUrl - The current URL of the viewer.
+ * @param {string} rootUrl - The root URL of the viewer.
+ * @returns {string} The new url for the viewer.
+ */
 function createViewerUrl(targetUrl, currentUrl, rootUrl) {
   const fullUrl = (new URL(targetUrl, currentUrl)).href;
   return '/?current=' + fullUrl + '&root=' + rootUrl;
 }
 
+/**
+ * This method sets the query parameters and updates the window history.
+ */
 function setQueryParametersAfterLogin() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -212,6 +237,11 @@ function setQueryParametersAfterLogin() {
   window.history.replaceState(null, null, '?' + urlParams.toString());
 }
 
+/**
+ * This function converts a blob to a data URL.
+ * @param {Blob} blob - The Blob from which to read.
+ * @returns {Promise<string>} Data URL representation of the blob.
+ */
 function convertBlobToDataUrl(blob) {
   return new Promise(resolve => {
     const reader = new FileReader();
