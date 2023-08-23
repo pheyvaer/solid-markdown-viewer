@@ -32,8 +32,7 @@ window.onload = async () => {
   document.getElementById('start-markdown').value = currentMarkdownUrl;
   document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
   document.getElementById('home').addEventListener('click', (e) => {
-    e.preventDefault();
-    loadMarkdown(getDefaultSession().info.isLoggedIn, rootMarkdownUrl);
+    clickToLoadOtherMarkdownFile(e, rootMarkdownUrl);
   });
 
   const webIDInput = document.getElementById('webid');
@@ -199,8 +198,7 @@ function replaceUrlsInMarkdown() {
 
     if (contentType && contentType === 'text/markdown') {
       url.addEventListener('click', async (e) => {
-        e.preventDefault();
-        loadMarkdown(getDefaultSession().info.isLoggedIn, fullUrl);
+        clickToLoadOtherMarkdownFile(e, fullUrl);
       });
       url.setAttribute('href', createViewerUrl(href, currentMarkdownUrl, rootMarkdownUrl));
     } else {
@@ -234,7 +232,7 @@ function createViewerUrl(targetUrl, currentUrl, rootUrl) {
 }
 
 /**
- * This method sets the query parameters and updates the window history.
+ * This method sets the query parameters for the current and root Markdown URLs after logging in.
  */
 function setQueryParametersAfterLogin() {
   const queryString = window.location.search;
@@ -245,6 +243,23 @@ function setQueryParametersAfterLogin() {
   }
 
   if (!urlParams.get('root') && currentMarkdownUrl !== DEFAULTS.rootMarkdownUrl) {
+    urlParams.set('root', rootMarkdownUrl);
+  }
+
+  window.history.replaceState(null, null, '?' + urlParams.toString());
+}
+
+/**
+ * This method sets the query parameters for the current and root Markdown URLs.
+ */
+function setQueryParameters() {
+  const urlParams = new URLSearchParams();
+
+  if (currentMarkdownUrl !== DEFAULTS.currentMarkdownUrl) {
+    urlParams.set('current', currentMarkdownUrl);
+  }
+
+  if (currentMarkdownUrl !== DEFAULTS.rootMarkdownUrl) {
     urlParams.set('root', rootMarkdownUrl);
   }
 
@@ -264,4 +279,17 @@ function convertBlobToDataUrl(blob) {
     };
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * This method handles clicking on a link to load another Markdown file.
+ * @param {Event} e - The event that is given to an event listener.
+ * @param {string} markdownUrl - The URL of the Markdown file that should be loaded.
+ */
+function clickToLoadOtherMarkdownFile(e, markdownUrl) {
+  e.preventDefault();
+  window.history.pushState(null, null, window.location);
+  loadMarkdown(getDefaultSession().info.isLoggedIn, markdownUrl);
+  currentMarkdownUrl = markdownUrl;
+  setQueryParameters();
 }
