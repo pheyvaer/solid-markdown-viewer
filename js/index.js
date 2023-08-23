@@ -33,7 +33,10 @@ window.onload = async () => {
   document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
   document.getElementById('home').addEventListener('click', (e) => {
     e.preventDefault();
+    window.history.pushState(null, null, window.location);
     loadMarkdown(getDefaultSession().info.isLoggedIn, rootMarkdownUrl);
+    currentMarkdownUrl = rootMarkdownUrl;
+    setQueryParameters();
   });
 
   const webIDInput = document.getElementById('webid');
@@ -200,7 +203,10 @@ function replaceUrlsInMarkdown() {
     if (contentType && contentType === 'text/markdown') {
       url.addEventListener('click', async (e) => {
         e.preventDefault();
+        window.history.pushState(null, null, window.location);
         loadMarkdown(getDefaultSession().info.isLoggedIn, fullUrl);
+        currentMarkdownUrl = fullUrl;
+        setQueryParameters();
       });
       url.setAttribute('href', createViewerUrl(href, currentMarkdownUrl, rootMarkdownUrl));
     } else {
@@ -234,7 +240,7 @@ function createViewerUrl(targetUrl, currentUrl, rootUrl) {
 }
 
 /**
- * This method sets the query parameters and updates the window history.
+ * This method sets the query parameters for the current and root Markdown URLs after logging in.
  */
 function setQueryParametersAfterLogin() {
   const queryString = window.location.search;
@@ -245,6 +251,23 @@ function setQueryParametersAfterLogin() {
   }
 
   if (!urlParams.get('root') && currentMarkdownUrl !== DEFAULTS.rootMarkdownUrl) {
+    urlParams.set('root', rootMarkdownUrl);
+  }
+
+  window.history.replaceState(null, null, '?' + urlParams.toString());
+}
+
+/**
+ * This method sets the query parameters for the current and root Markdown URLs.
+ */
+function setQueryParameters() {
+  const urlParams = new URLSearchParams();
+
+  if (currentMarkdownUrl !== DEFAULTS.currentMarkdownUrl) {
+    urlParams.set('current', currentMarkdownUrl);
+  }
+
+  if (currentMarkdownUrl !== DEFAULTS.rootMarkdownUrl) {
     urlParams.set('root', rootMarkdownUrl);
   }
 
