@@ -32,11 +32,7 @@ window.onload = async () => {
   document.getElementById('start-markdown').value = currentMarkdownUrl;
   document.getElementById('home').setAttribute('href', createViewerUrl(rootMarkdownUrl, currentMarkdownUrl, rootMarkdownUrl));
   document.getElementById('home').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.history.pushState(null, null, window.location);
-    loadMarkdown(getDefaultSession().info.isLoggedIn, rootMarkdownUrl);
-    currentMarkdownUrl = rootMarkdownUrl;
-    setQueryParameters();
+    clickToLoadOtherMarkdownFile(e, rootMarkdownUrl);
   });
 
   const webIDInput = document.getElementById('webid');
@@ -202,11 +198,7 @@ function replaceUrlsInMarkdown() {
 
     if (contentType && contentType === 'text/markdown') {
       url.addEventListener('click', async (e) => {
-        e.preventDefault();
-        window.history.pushState(null, null, window.location);
-        loadMarkdown(getDefaultSession().info.isLoggedIn, fullUrl);
-        currentMarkdownUrl = fullUrl;
-        setQueryParameters();
+        clickToLoadOtherMarkdownFile(e, fullUrl);
       });
       url.setAttribute('href', createViewerUrl(href, currentMarkdownUrl, rootMarkdownUrl));
     } else {
@@ -287,4 +279,17 @@ function convertBlobToDataUrl(blob) {
     };
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * This method handles clicking on a link to load another Markdown file.
+ * @param {Event} e - The event that is given to an event listener.
+ * @param {string} markdownUrl - The URL of the Markdown file that should be loaded.
+ */
+function clickToLoadOtherMarkdownFile(e, markdownUrl) {
+  e.preventDefault();
+  window.history.pushState(null, null, window.location);
+  loadMarkdown(getDefaultSession().info.isLoggedIn, markdownUrl);
+  currentMarkdownUrl = markdownUrl;
+  setQueryParameters();
 }
